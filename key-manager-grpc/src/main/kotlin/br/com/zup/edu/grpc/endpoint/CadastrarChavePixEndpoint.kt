@@ -4,7 +4,7 @@ import br.com.zup.edu.*
 import br.com.zup.edu.grpc.dominio.enums.TipoChaveModel
 import br.com.zup.edu.grpc.dominio.enums.TipoContaModel
 import br.com.zup.edu.grpc.dominio.exception.ValidacaoException
-import br.com.zup.edu.grpc.dto.ChavePixRequestDto
+import br.com.zup.edu.grpc.endpoint.dto.ChavePixRequestDto
 import br.com.zup.edu.grpc.handler.ErrorAroundHandler
 import br.com.zup.edu.grpc.service.NovaChavePixService
 import io.grpc.stub.StreamObserver

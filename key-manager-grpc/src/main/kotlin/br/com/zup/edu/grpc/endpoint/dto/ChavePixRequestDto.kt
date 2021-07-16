@@ -1,4 +1,4 @@
-package br.com.zup.edu.grpc.dto
+package br.com.zup.edu.grpc.endpoint.dto
 
 import br.com.zup.edu.grpc.dominio.enums.TipoChaveModel
 import br.com.zup.edu.grpc.dominio.enums.TipoContaModel

@@ -4,7 +4,7 @@ import br.com.zup.edu.grpc.dominio.exception.ChavePixDuplicadaException
 import br.com.zup.edu.grpc.dominio.exception.ContaInexisteException
 import br.com.zup.edu.grpc.dominio.modelo.ChavePix
 import br.com.zup.edu.grpc.dominio.repository.ChavePixRepository
-import br.com.zup.edu.grpc.dto.ChavePixRequestDto
+import br.com.zup.edu.grpc.endpoint.dto.ChavePixRequestDto
 import br.com.zup.edu.grpc.http.client.ContaAssociadaResponse
 import br.com.zup.edu.grpc.http.client.ItauClient
 import io.micronaut.http.client.exceptions.HttpClientResponseException

@@ -1,6 +1,6 @@
 package br.com.zup.edu.grpc.dominio.validacao
 
-import br.com.zup.edu.grpc.dto.ChavePixRequestDto
+import br.com.zup.edu.grpc.endpoint.dto.ChavePixRequestDto
 import io.micronaut.core.annotation.AnnotationValue
 import io.micronaut.validation.validator.constraints.ConstraintValidator
 import io.micronaut.validation.validator.constraints.ConstraintValidatorContext
