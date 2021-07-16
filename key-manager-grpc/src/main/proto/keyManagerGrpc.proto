@@ -7,8 +7,12 @@ option objc_class_prefix = "HLW";
 
 package br.com.zup.edu;
 
-service ChavePixService {
-  rpc cadastrar (ChavePixRequest) returns (ChavePixResponse) {}
+service ChavePixCadastrarService {
+  rpc cadastrar (ChavePixCadastrarRequest) returns (ChavePixCadastrarResponse) {}
+}
+
+service ChavePixRemoverService {
+  rpc remover (ChavePixRemoverRequest) returns (ChavePixRemoverResponse) {}
 }
 
 enum TipoChave {
@@ -25,13 +29,22 @@ enum TipoConta {
   CONTA_POUPANCA = 2;
 }
 
-message ChavePixRequest {
+message ChavePixCadastrarRequest {
   string clienteId = 1;
   TipoChave tipoChave = 2;
   string chave = 3;
   TipoConta tipoConta = 4;
 }
 
-message ChavePixResponse {
+message ChavePixCadastrarResponse {
   string pixId = 1;
+}
+
+message ChavePixRemoverRequest {
+  string clienteId = 1;
+  string pixIdInterno = 2;
+}
+
+message ChavePixRemoverResponse {
+  bool removida = 1;
 }

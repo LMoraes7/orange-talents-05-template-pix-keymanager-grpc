@@ -1,6 +1,6 @@
 package br.com.zup.edu.grpc.dominio.validacao
 
-import br.com.zup.edu.grpc.endpoint.dto.ChavePixRequestDto
+import br.com.zup.edu.grpc.endpoint.cadastrar.dto.ChavePixCadastrarRequestDto
 import io.micronaut.core.annotation.AnnotationValue
 import io.micronaut.validation.validator.constraints.ConstraintValidator
 import io.micronaut.validation.validator.constraints.ConstraintValidatorContext
@@ -16,10 +16,10 @@ import kotlin.annotation.AnnotationTarget.*
 annotation class ChaveIsValid
 
 @Singleton
-class ChaveIsValidValidator : ConstraintValidator<ChaveIsValid, ChavePixRequestDto> {
+class ChaveIsValidValidator : ConstraintValidator<ChaveIsValid, ChavePixCadastrarRequestDto> {
 
     override fun isValid(
-        value: ChavePixRequestDto,
+        value: ChavePixCadastrarRequestDto,
         annotationMetadata: AnnotationValue<ChaveIsValid>,
         context: ConstraintValidatorContext,
     ): Boolean {

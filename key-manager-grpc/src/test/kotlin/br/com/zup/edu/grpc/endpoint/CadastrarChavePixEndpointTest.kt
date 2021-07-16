@@ -19,17 +19,17 @@ import javax.inject.Singleton
 
 @MicronautTest(transactional = false)
 internal class CadastrarChavePixEndpointTest(
-    private val grpcClient: ChavePixServiceGrpc.ChavePixServiceBlockingStub,
+    private val grpcClient: ChavePixCadastrarServiceGrpc.ChavePixCadastrarServiceBlockingStub,
 ) {
 
     @field:Inject
     lateinit var repository: ChavePixRepository
 
-    lateinit var request: ChavePixRequest
+    lateinit var request: ChavePixCadastrarRequest
 
     @BeforeEach
     fun init() {
-        this.request = ChavePixRequest.newBuilder()
+        this.request = ChavePixCadastrarRequest.newBuilder()
             .setClienteId("5260263c-a3c1-4727-ae32-3bdb2538841b")
             .setTipoChave(TipoChave.EMAIL)
             .setChave("yuri@email.com")
@@ -44,7 +44,7 @@ internal class CadastrarChavePixEndpointTest(
 
     @Test
     internal fun deveCadastrarChavePixEBuscarPeloIdInterno() {
-        val response: ChavePixResponse = this.grpcClient.cadastrar(this.request)
+        val response: ChavePixCadastrarResponse = this.grpcClient.cadastrar(this.request)
         assertNotNull(response.pixId)
         assertTrue(this.repository.buscarPeloIdInterno(response.pixId).isPresent)
     }
@@ -59,14 +59,14 @@ internal class CadastrarChavePixEndpointTest(
 
     @Test
     internal fun naoDeveCadastrarChaveComClienteInexistente() {
-        val request = ChavePixRequest.newBuilder()
-            .setClienteId("xxxx")
+        val request = ChavePixCadastrarRequest.newBuilder()
+            .setClienteId("xxxxx")
             .setTipoChave(TipoChave.ALEATORIA)
             .setTipoConta(TipoConta.CONTA_CORRENTE)
             .build()
 
         val error: StatusRuntimeException =
-            assertThrows<StatusRuntimeException> { this.grpcClient.cadastrar(this.request) }
+            assertThrows<StatusRuntimeException> { this.grpcClient.cadastrar(request) }
         assertEquals(Status.NOT_FOUND.code, error.status.code)
     }
 
@@ -74,8 +74,9 @@ internal class CadastrarChavePixEndpointTest(
     class Clients {
 
         @Singleton
-        fun blockingStub(@GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel): ChavePixServiceGrpc.ChavePixServiceBlockingStub? {
-            return ChavePixServiceGrpc.newBlockingStub(channel)
+        fun blockingStub(@GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel):
+                ChavePixCadastrarServiceGrpc.ChavePixCadastrarServiceBlockingStub? {
+            return ChavePixCadastrarServiceGrpc.newBlockingStub(channel)
         }
     }
 }

@@ -1,8 +1,8 @@
 package br.com.zup.edu.grpc.handler
 
-import br.com.zup.edu.grpc.dominio.exception.ChavePixDuplicadaException
-import br.com.zup.edu.grpc.dominio.exception.ContaInexisteException
-import br.com.zup.edu.grpc.dominio.exception.ValidacaoException
+import br.com.zup.edu.grpc.dominio.exception.badrequest.ChavePixDuplicadaException
+import br.com.zup.edu.grpc.dominio.exception.badrequest.ValidacaoException
+import br.com.zup.edu.grpc.dominio.exception.notfound.InformacaoNaoEncontradaException
 import io.grpc.Status
 import io.grpc.stub.StreamObserver
 import io.micronaut.aop.InterceptorBean
@@ -21,7 +21,10 @@ class ErrorHandlerInterceptor: MethodInterceptor<Any, Any> {
         } catch (ex: Exception) {
             val responseObserver = context.parameterValues[1] as StreamObserver<*>
             val status = when (ex) {
-                is ConstraintViolationException,
+                is ConstraintViolationException -> Status.INVALID_ARGUMENT
+                    .withCause(ex)
+                    .withDescription(ex.message)
+
                 is ValidacaoException -> Status.INVALID_ARGUMENT
                     .withCause(ex)
                     .withDescription(ex.message)
@@ -30,11 +33,7 @@ class ErrorHandlerInterceptor: MethodInterceptor<Any, Any> {
                     .withCause(ex)
                     .withDescription(ex.message)
 
-                is ValidacaoException -> Status.INTERNAL
-                    .withCause(ex)
-                    .withDescription(ex.message)
-
-                is ContaInexisteException -> Status.NOT_FOUND
+                is InformacaoNaoEncontradaException -> Status.NOT_FOUND
                     .withCause(ex)
                     .withDescription(ex.message)
 

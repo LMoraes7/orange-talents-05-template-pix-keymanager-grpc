@@ -11,6 +11,9 @@ interface ChavePixRepository: JpaRepository<ChavePix, Long> {
 
     fun existsByChave(chave: String): Boolean
 
+    @Query("DELETE FROM ChavePix c WHERE c.pixIdInterno = :pixIdInterno")
+    fun deletarPeloIdInterno(pixIdInterno: String)
+
     @Query("SELECT c FROM ChavePix c WHERE c.pixIdInterno = :pixIdInterno")
     fun buscarPeloIdInterno(pixIdInterno: String): Optional<ChavePix>
 }

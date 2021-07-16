@@ -1,4 +1,4 @@
-package br.com.zup.edu.grpc.endpoint.dto
+package br.com.zup.edu.grpc.endpoint.cadastrar.dto
 
 import br.com.zup.edu.grpc.dominio.enums.TipoChaveModel
 import br.com.zup.edu.grpc.dominio.enums.TipoContaModel
@@ -7,7 +7,7 @@ import br.com.zup.edu.grpc.dominio.modelo.ContaAssociada
 import br.com.zup.edu.grpc.dominio.modelo.Instuicao
 import br.com.zup.edu.grpc.dominio.modelo.Titular
 import br.com.zup.edu.grpc.dominio.validacao.ChaveIsValid
-import br.com.zup.edu.grpc.http.client.ContaAssociadaResponse
+import br.com.zup.edu.grpc.http.client.response.ContaAssociadaResponse
 import io.micronaut.core.annotation.Introspected
 import java.util.*
 import javax.validation.constraints.NotBlank
@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull
 
 @ChaveIsValid
 @Introspected
-class ChavePixRequestDto(
+class ChavePixCadastrarRequestDto(
     @field:NotBlank
     val clienteId: String,
     @field:NotNull

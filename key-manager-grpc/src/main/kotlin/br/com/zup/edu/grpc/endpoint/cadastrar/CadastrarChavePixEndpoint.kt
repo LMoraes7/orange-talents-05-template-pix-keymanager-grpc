@@ -1,14 +1,15 @@
-package br.com.zup.edu.grpc.endpoint
+package br.com.zup.edu.grpc.endpoint.cadastrar
 
 import br.com.zup.edu.*
 import br.com.zup.edu.grpc.dominio.enums.TipoChaveModel
 import br.com.zup.edu.grpc.dominio.enums.TipoContaModel
-import br.com.zup.edu.grpc.dominio.exception.ValidacaoException
-import br.com.zup.edu.grpc.endpoint.dto.ChavePixRequestDto
+import br.com.zup.edu.grpc.dominio.exception.badrequest.ValidacaoException
+import br.com.zup.edu.grpc.endpoint.cadastrar.dto.ChavePixCadastrarRequestDto
 import br.com.zup.edu.grpc.handler.ErrorAroundHandler
 import br.com.zup.edu.grpc.service.NovaChavePixService
 import io.grpc.stub.StreamObserver
 import io.micronaut.validation.validator.Validator
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.inject.Singleton
 import javax.validation.ConstraintViolationException
@@ -18,33 +19,33 @@ import javax.validation.ConstraintViolationException
 class CadastrarChavePixEndpoint(
     private val service: NovaChavePixService,
     private val validator: Validator,
-) : ChavePixServiceGrpc.ChavePixServiceImplBase() {
+) : ChavePixCadastrarServiceGrpc.ChavePixCadastrarServiceImplBase() {
 
-    private val logger = LoggerFactory.getLogger(CadastrarChavePixEndpoint::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(CadastrarChavePixEndpoint::class.java)
 
     override fun cadastrar(
-        request: ChavePixRequest,
-        responseObserver: StreamObserver<ChavePixResponse>,
+        request: ChavePixCadastrarRequest,
+        responseObserver: StreamObserver<ChavePixCadastrarResponse>
     ) {
-        this.logger.info("Endpoint -> recebendo requisição para cadastro de chave PIX")
-        this.logger.info("Endpoint -> efetuando validações de entrada para a requisição")
+        this.logger.info("endpoint -> recebendo requisição para cadastro de chave pix")
+        this.logger.info("endpoint -> efetuando validações de entrada para a requisição")
 
-        val chavePixDto: ChavePixRequestDto = request.paraChavePixRequestDto(this.validator)
+        val chavePixCadastrarDto: ChavePixCadastrarRequestDto = request.paraChavePixCadastrarRequestDto(this.validator)
 
-        this.logger.info("Endpoint -> repassando requisição para a Service")
+        this.logger.info("endpoint -> repassando requisição para a Service")
 
-        this.service.cadastrar(chavePixDto).run {
-            logger.info("Endpoint -> recebendo o pixIdInterno retornado pela Service")
-            responseObserver.onNext(ChavePixResponse.newBuilder().setPixId(this).build())
+        this.service.cadastrar(chavePixCadastrarDto).run {
+            logger.info("endpoint -> recebendo o pixIdInterno retornado pela service")
+            responseObserver.onNext(ChavePixCadastrarResponse.newBuilder().setPixId(this).build())
         }.let {
-            this.logger.info("Endpoint -> terminando requisição para cadastro de chave PIX")
+            this.logger.info("endpoint -> terminando requisição para cadastro de chave pix")
             responseObserver.onCompleted()
         }
     }
 }
 
-private fun ChavePixRequest.paraChavePixRequestDto(validator: Validator): ChavePixRequestDto =
-    ChavePixRequestDto(
+private fun ChavePixCadastrarRequest.paraChavePixCadastrarRequestDto(validator: Validator): ChavePixCadastrarRequestDto =
+    ChavePixCadastrarRequestDto(
         clienteId = this.clienteId,
         tipoChave =
         if

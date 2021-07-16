@@ -15,8 +15,8 @@ jpa:
   default:
     properties:
       hibernate.hbm2ddl.auto: create-drop
-      hibernate.show_sql: true
-      hibernate.format_sql: true
+      hibernate.show_sql: false
+      hibernate.format_sql: false
 
 itau:
   contas:
