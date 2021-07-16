@@ -1,7 +1,7 @@
-package br.com.zup.edu.grpc.http.client
+package br.com.zup.edu.grpc.http.client.itau
 
-import br.com.zup.edu.grpc.http.client.response.ClienteResponse
-import br.com.zup.edu.grpc.http.client.response.ContaAssociadaResponse
+import br.com.zup.edu.grpc.http.client.itau.response.ClienteResponse
+import br.com.zup.edu.grpc.http.client.itau.response.ContaAssociadaResponse
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.PathVariable

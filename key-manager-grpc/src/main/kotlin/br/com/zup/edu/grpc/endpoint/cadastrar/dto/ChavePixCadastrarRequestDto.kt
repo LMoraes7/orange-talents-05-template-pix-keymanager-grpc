@@ -7,9 +7,8 @@ import br.com.zup.edu.grpc.dominio.modelo.ContaAssociada
 import br.com.zup.edu.grpc.dominio.modelo.Instuicao
 import br.com.zup.edu.grpc.dominio.modelo.Titular
 import br.com.zup.edu.grpc.dominio.validacao.ChaveIsValid
-import br.com.zup.edu.grpc.http.client.response.ContaAssociadaResponse
+import br.com.zup.edu.grpc.http.client.itau.response.ContaAssociadaResponse
 import io.micronaut.core.annotation.Introspected
-import java.util.*
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
@@ -20,7 +19,7 @@ class ChavePixCadastrarRequestDto(
     val clienteId: String,
     @field:NotNull
     val tipoChave: TipoChaveModel,
-    val chave: String,
+    val chave: String = "",
     @field:NotNull
     val tipoConta: TipoContaModel,
 ) {
@@ -28,11 +27,7 @@ class ChavePixCadastrarRequestDto(
         ChavePix(
             clienteId = this.clienteId,
             tipoChave = this.tipoChave,
-            chave =
-                if (this.tipoChave == TipoChaveModel.ALEATORIA)
-                    UUID.randomUUID().toString()
-                else
-                    this.chave,
+            chave = this.chave,
             tipoConta = this.tipoConta,
             conta = ContaAssociada(
                 tipo = contaAssociadaResponse.tipo,

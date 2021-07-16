@@ -1,4 +1,4 @@
-package br.com.zup.edu.grpc.http.client.response
+package br.com.zup.edu.grpc.http.client.itau.response
 
 data class ContaAssociadaResponse(
     val tipo: String,

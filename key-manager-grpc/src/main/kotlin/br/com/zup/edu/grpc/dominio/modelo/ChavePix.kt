@@ -2,6 +2,8 @@ package br.com.zup.edu.grpc.dominio.modelo
 
 import br.com.zup.edu.grpc.dominio.enums.TipoChaveModel
 import br.com.zup.edu.grpc.dominio.enums.TipoContaModel
+import br.com.zup.edu.grpc.http.client.bcb.dto.request.CreatePixKeyRequest
+import br.com.zup.edu.grpc.http.client.bcb.dto.request.DeletePixKeyRequest
 import java.util.*
 import javax.persistence.*
 
@@ -27,6 +29,10 @@ class ChavePix(
 
     @Column(nullable = false, unique = true)
     val pixIdInterno: String = UUID.randomUUID().toString()
+
+    fun paraCreateChavePixKeyRequest(): CreatePixKeyRequest = CreatePixKeyRequest(this)
+
+    fun paraDeletePixKeyRequest(): DeletePixKeyRequest = DeletePixKeyRequest(this)
 }
 
 @Embeddable

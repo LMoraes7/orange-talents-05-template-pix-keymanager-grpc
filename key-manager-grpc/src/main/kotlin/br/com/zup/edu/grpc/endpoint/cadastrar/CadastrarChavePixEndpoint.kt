@@ -25,7 +25,7 @@ class CadastrarChavePixEndpoint(
 
     override fun cadastrar(
         request: ChavePixCadastrarRequest,
-        responseObserver: StreamObserver<ChavePixCadastrarResponse>
+        responseObserver: StreamObserver<ChavePixCadastrarResponse>,
     ) {
         this.logger.info("endpoint -> recebendo requisição para cadastro de chave pix")
         this.logger.info("endpoint -> efetuando validações de entrada para a requisição")
