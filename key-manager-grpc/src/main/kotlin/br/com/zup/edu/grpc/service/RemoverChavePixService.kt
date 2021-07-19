@@ -51,11 +51,24 @@ class RemoverChavePixService(
             }
     }
 
+    // Ao invés de buscar somente pelo pixIdInterno e depois fazer um 'if' para verificar se os
+    //  id's dos clientes são iguais, preferi buscar a ChavePix pelo pixIdInterno e pelo clienteId informados
+    //      fazendo um AND na consulta no BD
+    //
+    //Com isso deixaria de retornar um código 422 para o consumidor e retornaria um 404.
+    //  Mas vou deixar comentado o código com o retorno 422 abaixo como exemplo que eu iria usar
+    //
+    //Claro, no exemplo que eu apliquei a semântica de retorno poderia ficar um pouco confusa para o cliente,
+    //  mas acredito que em um sistema que possua interface gráfica,
+    //      um usuário não poderia e nem deveria 'ver' chaves pix que não lhe pertencem
+    //
     private fun removerChavePixNoSistemaInterno(chaveDto: ChavePixRemoverRequestDto): ChavePix =
-        //Verifica se a chave pix existe no BD
-        this.chavePixRepository.buscarPeloIdInterno(chaveDto.pixIdInterno!!)
+        this.chavePixRepository.buscarChavePeloIdInternoEPeloIdDoCliente(chaveDto.clienteId!!, chaveDto.pixIdInterno!!)
+        //this.chavePixRepository.buscarPeloIdInterno(chaveDto.pixIdInterno!!)
             .run {
                 this.ifPresentOrElse({
+                    //if(!chaveDto.clienteId.equals(it.clienteId))
+                        //throw ManipulacaoInvalidaDeChaveException("O usuário não está autorizado a realizar a exclusão da chave pix")
                     logger.info("service -> efetuando remoção da chave pix na base de dados")
                     chavePixRepository.deletarPeloIdInterno(chaveDto.pixIdInterno)
                 }, {
@@ -63,7 +76,6 @@ class RemoverChavePixService(
                 })
                 this.get()
             }
-
 
     private fun verificarSeOClienteExisteNoSistemaDoItau(chaveDto: ChavePixRemoverRequestDto) {
         try {

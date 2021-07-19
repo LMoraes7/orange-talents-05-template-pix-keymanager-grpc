@@ -8,7 +8,7 @@ import io.micronaut.data.jpa.repository.JpaRepository
 import java.util.*
 
 @Repository
-interface ChavePixRepository: JpaRepository<ChavePix, Long> {
+interface ChavePixRepository : JpaRepository<ChavePix, Long> {
 
     fun existsByChave(chave: String): Boolean
 
@@ -20,4 +20,7 @@ interface ChavePixRepository: JpaRepository<ChavePix, Long> {
 
     @Query("UPDATE ChavePix c SET c.chave = :chave WHERE c.pixIdInterno = :pixIdInterno")
     fun atualizarChavePeloIdInterno(chave: String, pixIdInterno: String): Optional<ChavePix>
+
+    @Query("SELECT c FROM ChavePix c WHERE c.clienteId = :clienteId AND c.pixIdInterno = :pixIdInterno")
+    fun buscarChavePeloIdInternoEPeloIdDoCliente(clienteId: String, pixIdInterno: String): Optional<ChavePix>
 }

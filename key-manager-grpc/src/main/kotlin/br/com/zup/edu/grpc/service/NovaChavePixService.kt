@@ -7,14 +7,17 @@ import br.com.zup.edu.grpc.dominio.repository.ChavePixRepository
 import br.com.zup.edu.grpc.endpoint.cadastrar.dto.ChavePixCadastrarRequestDto
 import br.com.zup.edu.grpc.http.client.bcb.BcbClient
 import br.com.zup.edu.grpc.http.client.bcb.dto.request.KeyType
-import br.com.zup.edu.grpc.http.client.itau.response.ContaAssociadaResponse
 import br.com.zup.edu.grpc.http.client.itau.ItauClient
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.exceptions.HttpClientResponseException
+import io.micronaut.validation.Validated
 import org.slf4j.LoggerFactory
+import java.lang.IllegalArgumentException
 import javax.inject.Singleton
 import javax.transaction.Transactional
+import javax.validation.Valid
 
+@Validated
 @Singleton
 class NovaChavePixService(
     private val itauClient: ItauClient,
@@ -25,12 +28,12 @@ class NovaChavePixService(
     private val logger = LoggerFactory.getLogger(NovaChavePixService::class.java)
 
     @Transactional
-    fun cadastrar(chavePixCadastrarDto: ChavePixCadastrarRequestDto): String {
+    fun cadastrar(@Valid chavePixCadastrarDto: ChavePixCadastrarRequestDto): String {
 
         this.logger.info("service -> recebendo requisição para cadastro de chave pix")
         this.logger.info("service -> verificando se a chave informada já está cadastrada no sistema")
 
-        this.verificarSeAChavePixInformadaJaExiste(chavePixCadastrarDto)
+        this.verificarSeAChavePixInformadaJaExisteNoSistemaLocal(chavePixCadastrarDto)
 
         this.logger.info("service -> efetuando busca do cliente no sistema itaú")
 
@@ -53,25 +56,22 @@ class NovaChavePixService(
 
     }
 
-    private fun verificarSeAChavePixInformadaJaExiste(chavePixCadastrarDto: ChavePixCadastrarRequestDto) {
+    private fun verificarSeAChavePixInformadaJaExisteNoSistemaLocal(chavePixCadastrarDto: ChavePixCadastrarRequestDto) {
         if (this.chavePixRepository.existsByChave(chavePixCadastrarDto.chave))
             throw ChavePixDuplicadaException("Chave informada já está cadastrada")
     }
 
     private fun buscarContaNoSistemaDoItau(chavePixCadastrarDto: ChavePixCadastrarRequestDto) =
-        try {
-            this.itauClient.buscarContaCliente(
-                chavePixCadastrarDto.clienteId,
-                chavePixCadastrarDto.tipoConta.name
-            ).body.get()
-        } catch (e: HttpClientResponseException) {
-            throw ContaNaoEncontradaException("Conta não existe no sistema Itaú")
-        }
+        this.itauClient.buscarContaCliente(chavePixCadastrarDto.clienteId, chavePixCadastrarDto.tipoConta.name)
+            .run {
+                this.body()
+                    ?: throw ContaNaoEncontradaException("A conta do cliente informado não existe no sistema Itaú")
+            }
 
     private fun cadastrarChavePixNoBacen(chavePix: ChavePix) {
         this.bcbClient.cadastrar(chavePix.paraCreateChavePixKeyRequest())
             .run {
-                if (this.status.code != HttpStatus.CREATED.code)
+                if (this.status == HttpStatus.UNPROCESSABLE_ENTITY)
                     throw ChavePixDuplicadaException("Chave informada já está cadastrada")
 
                 if (chavePix.tipoChave.keyType() == KeyType.RANDOM) {

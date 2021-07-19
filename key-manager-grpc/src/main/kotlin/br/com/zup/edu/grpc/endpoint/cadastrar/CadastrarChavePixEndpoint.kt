@@ -12,7 +12,6 @@ import io.micronaut.validation.validator.Validator
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.inject.Singleton
-import javax.validation.ConstraintViolationException
 
 @ErrorAroundHandler
 @Singleton
@@ -30,7 +29,7 @@ class CadastrarChavePixEndpoint(
         this.logger.info("endpoint -> recebendo requisição para cadastro de chave pix")
         this.logger.info("endpoint -> efetuando validações de entrada para a requisição")
 
-        val chavePixCadastrarDto: ChavePixCadastrarRequestDto = request.paraChavePixCadastrarRequestDto(this.validator)
+        val chavePixCadastrarDto: ChavePixCadastrarRequestDto = request.paraChavePixCadastrarRequestDto()
 
         this.logger.info("endpoint -> repassando requisição para a Service")
 
@@ -44,7 +43,7 @@ class CadastrarChavePixEndpoint(
     }
 }
 
-private fun ChavePixCadastrarRequest.paraChavePixCadastrarRequestDto(validator: Validator): ChavePixCadastrarRequestDto =
+fun ChavePixCadastrarRequest.paraChavePixCadastrarRequestDto(): ChavePixCadastrarRequestDto =
     ChavePixCadastrarRequestDto(
         clienteId = this.clienteId,
         tipoChave =
@@ -60,9 +59,10 @@ private fun ChavePixCadastrarRequest.paraChavePixCadastrarRequestDto(validator: 
             throw ValidacaoException("Tipo da conta deve ser informada")
         else
             TipoContaModel.valueOf(this.tipoConta.name),
-    ).run {
-        val errors = validator.validate(this)
-        if (errors.isNotEmpty())
-            throw ConstraintViolationException(errors)
-        this
-    }
+    )
+        //.run {
+        //val errors = validator.validate(this)
+        //if (errors.isNotEmpty())
+        //    throw ConstraintViolationException(errors)
+        //this
+    //}

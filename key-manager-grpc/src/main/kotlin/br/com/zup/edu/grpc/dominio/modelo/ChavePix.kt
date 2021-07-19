@@ -1,5 +1,7 @@
 package br.com.zup.edu.grpc.dominio.modelo
 
+import br.com.zup.edu.TipoChave
+import br.com.zup.edu.TipoConta
 import br.com.zup.edu.grpc.dominio.enums.TipoChaveModel
 import br.com.zup.edu.grpc.dominio.enums.TipoContaModel
 import br.com.zup.edu.grpc.http.client.bcb.dto.request.CreatePixKeyRequest
