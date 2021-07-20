@@ -77,18 +77,4 @@ class RemoverChavePixService(
                 })
                 this.get()
             }
-
-    private fun verificarSeOClienteExisteNoSistemaDoItau(chaveDto: ChavePixRemoverRequestDto) {
-        this.itauClient.buscarCliente(chaveDto.clienteId!!)
-            .run {
-                if (this.status == HttpStatus.NOT_FOUND)
-                    throw ClienteNaoEncontradoException("Cliente informado não existe no sistema Itaú")
-            }
-
-        //try {
-        //    this.itauClient.buscarCliente(chaveDto.clienteId!!)
-        //} catch (e: HttpClientResponseException) {
-        //    throw ClienteNaoEncontradoException("Cliente informado não existe no sistema Itaú")
-        //}
-    }
 }
