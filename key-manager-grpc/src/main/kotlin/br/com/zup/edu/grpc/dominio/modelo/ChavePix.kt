@@ -1,18 +1,18 @@
 package br.com.zup.edu.grpc.dominio.modelo
 
-import br.com.zup.edu.TipoChave
-import br.com.zup.edu.TipoConta
 import br.com.zup.edu.grpc.dominio.enums.TipoChaveModel
 import br.com.zup.edu.grpc.dominio.enums.TipoContaModel
+import br.com.zup.edu.grpc.endpoint.consultar.dto.response.ContaAssociadaResponseDto
 import br.com.zup.edu.grpc.http.client.bcb.dto.request.CreatePixKeyRequest
 import br.com.zup.edu.grpc.http.client.bcb.dto.request.DeletePixKeyRequest
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
 
 @Entity
 class ChavePix(
     @Column(nullable = false)
-    val clienteId: String,
+    val clienteId: String = "",
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     val tipoChave: TipoChaveModel,
@@ -28,6 +28,9 @@ class ChavePix(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
+
+    @Column(nullable = false, columnDefinition = "DATETIME")
+    val criadaEm: LocalDateTime = LocalDateTime.now()
 
     @Column(nullable = false, unique = true)
     val pixIdInterno: String = UUID.randomUUID().toString()
@@ -49,7 +52,15 @@ data class ContaAssociada(
     val numero: String,
     @Embedded
     val titular: Titular,
-)
+) {
+    fun paraResponseDto(): ContaAssociadaResponseDto =
+        ContaAssociadaResponseDto(
+            instituicao = this.instituicao.nome,
+            agencia = this.agencia,
+            numero = this.numero,
+            tipoConta = tipo
+        )
+}
 
 @Embeddable
 data class Instuicao(

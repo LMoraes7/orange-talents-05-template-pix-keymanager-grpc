@@ -63,7 +63,7 @@ class RemoverChavePixService(
     //      um usuário não poderia e nem deveria 'ver' chaves pix que não lhe pertencem
     //
     private fun removerChavePixNoSistemaInterno(chaveDto: ChavePixRemoverRequestDto): ChavePix =
-        this.chavePixRepository.buscarChavePeloIdInternoEPeloIdDoCliente(chaveDto.clienteId!!, chaveDto.pixIdInterno!!)
+        this.chavePixRepository.buscarChavePeloIdDoClienteEPeloIdInterno(chaveDto.clienteId!!, chaveDto.pixIdInterno!!)
         //this.chavePixRepository.buscarPeloIdInterno(chaveDto.pixIdInterno!!)
             .run {
                 this.ifPresentOrElse({

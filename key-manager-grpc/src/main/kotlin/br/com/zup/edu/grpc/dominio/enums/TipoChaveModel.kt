@@ -2,6 +2,7 @@ package br.com.zup.edu.grpc.dominio.enums
 
 import br.com.zup.edu.grpc.http.client.bcb.dto.request.KeyType
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator
+import org.hibernate.validator.internal.constraintvalidators.hv.br.CNPJValidator
 import org.hibernate.validator.internal.constraintvalidators.hv.br.CPFValidator
 
 enum class TipoChaveModel {
@@ -18,6 +19,21 @@ enum class TipoChaveModel {
 
         override fun keyType(): KeyType = KeyType.CPF
     },
+
+    CNPJ {
+        override fun valida(chave: String?): Boolean {
+            if(chave.isNullOrBlank())
+                return false
+
+            return CNPJValidator().run {
+                initialize(null)
+                isValid(chave, null)
+            }
+        }
+
+        override fun keyType(): KeyType = KeyType.CNPJ
+    },
+
     CELULAR {
         override fun valida(chave: String?): Boolean {
             if (chave.isNullOrBlank())

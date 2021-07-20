@@ -7,6 +7,10 @@ option objc_class_prefix = "HLW";
 
 package br.com.zup.edu;
 
+service ChavePixConsultarService {
+  rpc consultar (ChavePixConsultarRequest) returns (ChavePixConsultarResponse) {}
+}
+
 service ChavePixCadastrarService {
   rpc cadastrar (ChavePixCadastrarRequest) returns (ChavePixCadastrarResponse) {}
 }
@@ -15,12 +19,15 @@ service ChavePixRemoverService {
   rpc remover (ChavePixRemoverRequest) returns (ChavePixRemoverResponse) {}
 }
 
+//---------------------------------------------------------
+
 enum TipoChave {
   CHAVE_DESCONHECIDA = 0;
   CPF = 1;
-  CELULAR = 2;
-  EMAIL = 3;
-  ALEATORIA = 4;
+  CNPJ = 2;
+  CELULAR = 3;
+  EMAIL = 4;
+  ALEATORIA = 5;
 }
 
 enum TipoConta {
@@ -28,6 +35,46 @@ enum TipoConta {
   CONTA_CORRENTE = 1;
   CONTA_POUPANCA = 2;
 }
+
+//---------------------------------------------------------
+
+message FiltroPoPixId {
+  string clienteId = 1;
+  string pixId = 2;
+}
+
+message ChavePixConsultarRequest{
+  oneof filtro {
+    FiltroPoPixId pixId = 1;
+    string chave = 2;
+  }
+}
+
+//---------------------------------------------------------
+
+message Titular {
+  string nome = 1;
+  string cpf = 2;
+}
+
+message ContaAssociada {
+  string instituicao = 1;
+  string agencia = 2;
+  string numero = 3;
+  string tipoConta = 4;
+}
+
+message ChavePixConsultarResponse{
+  string pixId = 1;
+  string clienteId = 2;
+  string tipoChave = 3;
+  string chave = 4;
+  Titular titular = 5;
+  ContaAssociada contaAssociada = 6;
+  string dataRegistro = 7;
+}
+
+//---------------------------------------------------------
 
 message ChavePixCadastrarRequest {
   string clienteId = 1;
@@ -40,6 +87,8 @@ message ChavePixCadastrarResponse {
   string pixId = 1;
 }
 
+//---------------------------------------------------------
+
 message ChavePixRemoverRequest {
   string clienteId = 1;
   string pixIdInterno = 2;
@@ -48,3 +97,5 @@ message ChavePixRemoverRequest {
 message ChavePixRemoverResponse {
   bool removida = 1;
 }
+
+//---------------------------------------------------------
