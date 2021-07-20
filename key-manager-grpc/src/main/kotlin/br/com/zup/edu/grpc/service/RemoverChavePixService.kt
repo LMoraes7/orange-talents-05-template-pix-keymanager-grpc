@@ -5,6 +5,7 @@ import br.com.zup.edu.grpc.dominio.exception.notfound.ChavePixNaoEncontradaExcep
 import br.com.zup.edu.grpc.dominio.exception.notfound.ClienteNaoEncontradoException
 import br.com.zup.edu.grpc.dominio.modelo.ChavePix
 import br.com.zup.edu.grpc.dominio.repository.ChavePixRepository
+import br.com.zup.edu.grpc.endpoint.consultar.util.VerificarSeClienteExisteNoSistemaItau
 import br.com.zup.edu.grpc.endpoint.remover.dto.ChavePixRemoverRequestDto
 import br.com.zup.edu.grpc.http.client.bcb.BcbClient
 import br.com.zup.edu.grpc.http.client.itau.ItauClient
@@ -28,7 +29,7 @@ class RemoverChavePixService(
 
         this.logger.info("service -> efetuando busca do cliente no sistema itaú")
 
-        this.verificarSeOClienteExisteNoSistemaDoItau(chaveDto)
+        VerificarSeClienteExisteNoSistemaItau.verifica(this.itauClient, chaveDto.clienteId!!)
 
         this.logger.info("service -> efetuando busca da chave pix no sistema interno")
 
@@ -43,10 +44,10 @@ class RemoverChavePixService(
     private fun removerChavePixNoSistemaDoBacen(chavePixRemovida: ChavePix) {
         this.bcbClient.remover(chavePixRemovida.chave, chavePixRemovida.paraDeletePixKeyRequest())
             .run {
-                if (this.status.code == HttpStatus.FORBIDDEN.code)
+                if (this.status == HttpStatus.FORBIDDEN)
                     throw ManipulacaoInvalidaDeChaveException("O usuário não está autorizado a realizar a exclusão da chave pix")
 
-                if (this.status.code == HttpStatus.NOT_FOUND.code)
+                if (this.status == HttpStatus.NOT_FOUND)
                     throw ChavePixNaoEncontradaException("Chave PIX informada não existe no sistema do Bacen")
             }
     }
@@ -64,11 +65,11 @@ class RemoverChavePixService(
     //
     private fun removerChavePixNoSistemaInterno(chaveDto: ChavePixRemoverRequestDto): ChavePix =
         this.chavePixRepository.buscarChavePeloIdDoClienteEPeloIdInterno(chaveDto.clienteId!!, chaveDto.pixIdInterno!!)
-        //this.chavePixRepository.buscarPeloIdInterno(chaveDto.pixIdInterno!!)
+            //this.chavePixRepository.buscarPeloIdInterno(chaveDto.pixIdInterno!!)
             .run {
                 this.ifPresentOrElse({
                     //if(!chaveDto.clienteId.equals(it.clienteId))
-                        //throw ManipulacaoInvalidaDeChaveException("O usuário não está autorizado a realizar a exclusão da chave pix")
+                    //throw ManipulacaoInvalidaDeChaveException("O usuário não está autorizado a realizar a exclusão da chave pix")
                     logger.info("service -> efetuando remoção da chave pix na base de dados")
                     chavePixRepository.deletarPeloIdInterno(chaveDto.pixIdInterno)
                 }, {
@@ -78,10 +79,16 @@ class RemoverChavePixService(
             }
 
     private fun verificarSeOClienteExisteNoSistemaDoItau(chaveDto: ChavePixRemoverRequestDto) {
-        try {
-            this.itauClient.buscarCliente(chaveDto.clienteId!!)
-        } catch (e: HttpClientResponseException) {
-            throw ClienteNaoEncontradoException("Cliente informado não existe no sistema Itaú")
-        }
+        this.itauClient.buscarCliente(chaveDto.clienteId!!)
+            .run {
+                if (this.status == HttpStatus.NOT_FOUND)
+                    throw ClienteNaoEncontradoException("Cliente informado não existe no sistema Itaú")
+            }
+
+        //try {
+        //    this.itauClient.buscarCliente(chaveDto.clienteId!!)
+        //} catch (e: HttpClientResponseException) {
+        //    throw ClienteNaoEncontradoException("Cliente informado não existe no sistema Itaú")
+        //}
     }
 }

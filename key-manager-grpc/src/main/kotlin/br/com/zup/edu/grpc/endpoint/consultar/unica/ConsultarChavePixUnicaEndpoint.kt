@@ -1,10 +1,10 @@
-package br.com.zup.edu.grpc.endpoint.consultar
+package br.com.zup.edu.grpc.endpoint.consultar.unica
 
 import br.com.zup.edu.*
-import br.com.zup.edu.ChavePixConsultarRequest.FiltroCase.*
+import br.com.zup.edu.ChavePixUnicaConsultarRequest.FiltroCase.*
 import br.com.zup.edu.grpc.dominio.repository.ChavePixRepository
-import br.com.zup.edu.grpc.endpoint.consultar.dto.response.ChavePixResponseDto
-import br.com.zup.edu.grpc.endpoint.consultar.util.Filtro
+import br.com.zup.edu.grpc.endpoint.consultar.unica.dto.response.ChavePixResponseDto
+import br.com.zup.edu.grpc.endpoint.consultar.unica.util.Filtro
 import br.com.zup.edu.grpc.handler.ErrorAroundHandler
 import br.com.zup.edu.grpc.http.client.bcb.BcbClient
 import io.grpc.stub.StreamObserver
@@ -16,17 +16,17 @@ import javax.validation.Validator
 
 @ErrorAroundHandler
 @Singleton
-class ConsultarChavePixEndpoint(
+class ConsultarChavePixUnicaEndpoint(
     private val chavePixRepository: ChavePixRepository,
     private val bcbClient: BcbClient,
     private val validator: Validator,
-) : ChavePixConsultarServiceGrpc.ChavePixConsultarServiceImplBase() {
+) : ChavePixUnicaConsultarServiceGrpc.ChavePixUnicaConsultarServiceImplBase() {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    override fun consultar(
-        request: ChavePixConsultarRequest,
-        responseObserver: StreamObserver<ChavePixConsultarResponse>,
+    override fun consultarUnica(
+        request: ChavePixUnicaConsultarRequest,
+        responseObserver: StreamObserver<ChavePixUnicaConsultarResponse>,
     ) {
         this.logger.info("enpoint -> recebendo requisição para consulta de chave pix")
         this.logger.info("endpoint -> efetuando validações de entrada para a requisição")
@@ -47,8 +47,8 @@ class ConsultarChavePixEndpoint(
     }
 
     private fun createChavePixConsultarResponse(chaveDto: ChavePixResponseDto):
-            ChavePixConsultarResponse =
-        ChavePixConsultarResponse.newBuilder()
+            ChavePixUnicaConsultarResponse =
+        ChavePixUnicaConsultarResponse.newBuilder()
             .setPixId(chaveDto.pixId ?: "")
             .setClienteId(chaveDto.clienteId ?: "")
             .setTipoChave(chaveDto.tipoChave)
@@ -72,7 +72,7 @@ class ConsultarChavePixEndpoint(
 
 }
 
-private fun ChavePixConsultarRequest.toParaFiltro(validator: Validator, logger: Logger): Filtro {
+private fun ChavePixUnicaConsultarRequest.toParaFiltro(validator: Validator, logger: Logger): Filtro {
     val filtro: Filtro = when (filtroCase) {
         PIXID -> {
             logger.info("endpoint -> requisição para consulta de chave pix será através de um cliente id e um pix id interno")

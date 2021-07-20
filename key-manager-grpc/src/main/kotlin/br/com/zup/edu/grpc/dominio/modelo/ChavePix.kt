@@ -2,7 +2,7 @@ package br.com.zup.edu.grpc.dominio.modelo
 
 import br.com.zup.edu.grpc.dominio.enums.TipoChaveModel
 import br.com.zup.edu.grpc.dominio.enums.TipoContaModel
-import br.com.zup.edu.grpc.endpoint.consultar.dto.response.ContaAssociadaResponseDto
+import br.com.zup.edu.grpc.endpoint.consultar.unica.dto.response.ContaAssociadaResponseDto
 import br.com.zup.edu.grpc.http.client.bcb.dto.request.CreatePixKeyRequest
 import br.com.zup.edu.grpc.http.client.bcb.dto.request.DeletePixKeyRequest
 import java.time.LocalDateTime

@@ -7,8 +7,12 @@ option objc_class_prefix = "HLW";
 
 package br.com.zup.edu;
 
-service ChavePixConsultarService {
-  rpc consultar (ChavePixConsultarRequest) returns (ChavePixConsultarResponse) {}
+service ChavePixUnicaConsultarService {
+  rpc consultarUnica (ChavePixUnicaConsultarRequest) returns (ChavePixUnicaConsultarResponse) {}
+}
+
+service ChavePixTodasConsultarService {
+  rpc consultarTodas (ChavePixTodasConsultarRequest) returns (ChavePixTodasConsultarResponse) {}
 }
 
 service ChavePixCadastrarService {
@@ -17,6 +21,25 @@ service ChavePixCadastrarService {
 
 service ChavePixRemoverService {
   rpc remover (ChavePixRemoverRequest) returns (ChavePixRemoverResponse) {}
+}
+
+//---------------------------------------------------------
+
+message ChavePixTodasConsultarRequest {
+  string clienteId = 1;
+}
+
+message ChavePixTodasConsultarResponse {
+  message ChavePix {
+    string pixId = 1;
+    string tipoChave = 2;
+    string chave = 3;
+    string tipoConta = 4;
+    string dataRegistro = 5;
+  }
+
+  string clienteId = 1;
+  repeated ChavePix chaves = 2;
 }
 
 //---------------------------------------------------------
@@ -43,7 +66,7 @@ message FiltroPoPixId {
   string pixId = 2;
 }
 
-message ChavePixConsultarRequest{
+message ChavePixUnicaConsultarRequest{
   oneof filtro {
     FiltroPoPixId pixId = 1;
     string chave = 2;
@@ -64,7 +87,7 @@ message ContaAssociada {
   string tipoConta = 4;
 }
 
-message ChavePixConsultarResponse{
+message ChavePixUnicaConsultarResponse{
   string pixId = 1;
   string clienteId = 2;
   string tipoChave = 3;

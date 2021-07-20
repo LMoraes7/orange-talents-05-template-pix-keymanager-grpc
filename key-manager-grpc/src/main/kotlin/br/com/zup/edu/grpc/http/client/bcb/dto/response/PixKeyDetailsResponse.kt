@@ -1,7 +1,7 @@
 package br.com.zup.edu.grpc.http.client.bcb.dto.response
 
-import br.com.zup.edu.grpc.endpoint.consultar.dto.response.ChavePixResponseDto
-import br.com.zup.edu.grpc.endpoint.consultar.dto.response.ContaAssociadaResponseDto
+import br.com.zup.edu.grpc.endpoint.consultar.unica.dto.response.ChavePixResponseDto
+import br.com.zup.edu.grpc.endpoint.consultar.unica.dto.response.ContaAssociadaResponseDto
 import br.com.zup.edu.grpc.http.client.bcb.dto.request.AccountType
 import br.com.zup.edu.grpc.http.client.bcb.dto.request.KeyType
 

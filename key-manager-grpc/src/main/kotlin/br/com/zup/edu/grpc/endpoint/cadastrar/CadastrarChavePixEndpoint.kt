@@ -60,9 +60,3 @@ fun ChavePixCadastrarRequest.paraChavePixCadastrarRequestDto(): ChavePixCadastra
         else
             TipoContaModel.valueOf(this.tipoConta.name),
     )
-        //.run {
-        //val errors = validator.validate(this)
-        //if (errors.isNotEmpty())
-        //    throw ConstraintViolationException(errors)
-        //this
-    //}

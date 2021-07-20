@@ -14,6 +14,8 @@ interface ChavePixRepository : JpaRepository<ChavePix, Long> {
 
     fun findByChave(chave: String): Optional<ChavePix>
 
+    fun findByClienteId(clienteId: String): List<ChavePix>
+
     @Query("DELETE FROM ChavePix c WHERE c.pixIdInterno = :pixIdInterno")
     fun deletarPeloIdInterno(pixIdInterno: String)
 

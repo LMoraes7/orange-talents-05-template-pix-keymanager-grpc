@@ -1,4 +1,4 @@
-package br.com.zup.edu.grpc.endpoint.consultar.dto.response
+package br.com.zup.edu.grpc.endpoint.consultar.unica.dto.response
 
 import br.com.zup.edu.grpc.dominio.modelo.ChavePix
 

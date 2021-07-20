@@ -64,20 +64,47 @@ class NovaChavePixService(
     private fun buscarContaNoSistemaDoItau(chavePixCadastrarDto: ChavePixCadastrarRequestDto) =
         this.itauClient.buscarContaCliente(chavePixCadastrarDto.clienteId, chavePixCadastrarDto.tipoConta.name)
             .run {
-                this.body()
-                    ?: throw ContaNaoEncontradaException("A conta do cliente informado não existe no sistema Itaú")
+                when (this.status) {
+                    HttpStatus.OK -> this.body()
+                    else -> throw ContaNaoEncontradaException("A conta do cliente informado não existe no sistema Itaú")
+                }
+                //this.body()
+                //    ?: throw ContaNaoEncontradaException("A conta do cliente informado não existe no sistema Itaú")
             }
 
     private fun cadastrarChavePixNoBacen(chavePix: ChavePix) {
-        this.bcbClient.cadastrar(chavePix.paraCreateChavePixKeyRequest())
-            .run {
-                if (this.status == HttpStatus.UNPROCESSABLE_ENTITY)
-                    throw ChavePixDuplicadaException("Chave informada já está cadastrada")
-
-                if (chavePix.tipoChave.keyType() == KeyType.RANDOM) {
-                    logger.info("service -> atualizando chave pix na base de dados do sistema interno")
-                    chavePixRepository.atualizarChavePeloIdInterno(this.body().key, chavePix.pixIdInterno)
+        try {
+            this.bcbClient.cadastrar(chavePix.paraCreateChavePixKeyRequest())
+                .run {
+                    if (chavePix.tipoChave.keyType() == KeyType.RANDOM) {
+                        logger.info("service -> atualizando chave pix na base de dados do sistema interno")
+                        chavePixRepository.atualizarChavePeloIdInterno(this.body().key, chavePix.pixIdInterno)
+                    }
                 }
-            }
+        } catch (e: HttpClientResponseException) {
+            if (e.status == HttpStatus.UNPROCESSABLE_ENTITY)
+                throw ChavePixDuplicadaException("Chave informada já está cadastrada")
+        }
+
+        //this.bcbClient.cadastrar(chavePix.paraCreateChavePixKeyRequest())
+        //    .run {
+        //        when (this.status) {
+        //            HttpStatus.CREATED -> {
+        //                if (chavePix.tipoChave.keyType() == KeyType.RANDOM) {
+        //                    logger.info("service -> atualizando chave pix na base de dados do sistema interno")
+        //                    chavePixRepository.atualizarChavePeloIdInterno(this.body().key, chavePix.pixIdInterno)
+        //                }
+        //            }
+        //            else -> throw ChavePixDuplicadaException("Chave informada já está cadastrada")
+        //        }
+
+        //if (this.status == HttpStatus.UNPROCESSABLE_ENTITY)
+        //    throw ChavePixDuplicadaException("Chave informada já está cadastrada")
+
+        //if (chavePix.tipoChave.keyType() == KeyType.RANDOM) {
+        //    logger.info("service -> atualizando chave pix na base de dados do sistema interno")
+        //    chavePixRepository.atualizarChavePeloIdInterno(this.body().key, chavePix.pixIdInterno)
+        //}
     }
 }
+

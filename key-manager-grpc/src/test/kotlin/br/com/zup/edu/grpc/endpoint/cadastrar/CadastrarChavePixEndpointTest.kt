@@ -121,7 +121,7 @@ internal class CadastrarChavePixEndpointTest(
             .thenReturn(HttpResponse.ok(this.createContaAssociadaResponse()))
 
         Mockito.`when`(this.bcbClient.cadastrar(this.chavePix.paraCreateChavePixKeyRequest()))
-            .thenReturn(HttpResponse.ok(this.createChavePixKeyResponse()))
+            .thenReturn(HttpResponse.created(this.createChavePixKeyResponse()))
 
         this.request.tipoChave = TipoChave.ALEATORIA
         this.request.chave = ""

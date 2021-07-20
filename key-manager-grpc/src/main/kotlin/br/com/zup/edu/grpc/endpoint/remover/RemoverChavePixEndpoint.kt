@@ -34,9 +34,11 @@ class RemoverChavePixEndpoint(
         this.logger.info("endpoint -> repassando requisição para a service de remoção")
 
         this.service.remover(chaveDto)
-        responseObserver.onNext(ChavePixRemoverResponse.newBuilder()
-            .setRemovida(true)
-            .build()
+
+        responseObserver.onNext(
+            ChavePixRemoverResponse.newBuilder()
+                .setRemovida(true)
+                .build()
         )
 
         this.logger.info("endpoint -> terminando requisição para remoção de chave pix")

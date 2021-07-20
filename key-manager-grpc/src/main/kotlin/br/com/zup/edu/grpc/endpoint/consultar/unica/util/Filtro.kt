@@ -1,9 +1,10 @@
-package br.com.zup.edu.grpc.endpoint.consultar.util
+package br.com.zup.edu.grpc.endpoint.consultar.unica.util
 
 import br.com.zup.edu.grpc.dominio.exception.badrequest.ValidacaoException
 import br.com.zup.edu.grpc.dominio.exception.notfound.ChavePixNaoEncontradaException
 import br.com.zup.edu.grpc.dominio.repository.ChavePixRepository
-import br.com.zup.edu.grpc.endpoint.consultar.dto.response.ChavePixResponseDto
+import br.com.zup.edu.grpc.dominio.validacao.IsUUID
+import br.com.zup.edu.grpc.endpoint.consultar.unica.dto.response.ChavePixResponseDto
 import br.com.zup.edu.grpc.http.client.bcb.BcbClient
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.HttpStatus
@@ -19,6 +20,7 @@ sealed class Filtro {
     @Introspected
     data class PorClienteEChave(
         @field:NotBlank
+        @field:IsUUID
         val clienteId: String,
         @field:NotBlank
         val pixId: String,

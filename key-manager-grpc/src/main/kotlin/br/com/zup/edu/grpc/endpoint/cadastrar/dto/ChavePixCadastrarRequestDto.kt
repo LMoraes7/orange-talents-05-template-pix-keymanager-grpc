@@ -7,18 +7,22 @@ import br.com.zup.edu.grpc.dominio.modelo.ContaAssociada
 import br.com.zup.edu.grpc.dominio.modelo.Instuicao
 import br.com.zup.edu.grpc.dominio.modelo.Titular
 import br.com.zup.edu.grpc.dominio.validacao.ChaveIsValid
+import br.com.zup.edu.grpc.dominio.validacao.IsUUID
 import br.com.zup.edu.grpc.http.client.itau.response.ContaAssociadaResponse
 import io.micronaut.core.annotation.Introspected
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
+import javax.validation.constraints.Size
 
 @ChaveIsValid
 @Introspected
 class ChavePixCadastrarRequestDto(
     @field:NotBlank
+    @field:IsUUID
     val clienteId: String,
     @field:NotNull
     val tipoChave: TipoChaveModel,
+    @field:Size(max = 77)
     val chave: String = "",
     @field:NotNull
     val tipoConta: TipoContaModel,

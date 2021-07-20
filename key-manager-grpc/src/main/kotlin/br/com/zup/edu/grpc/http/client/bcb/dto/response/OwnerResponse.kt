@@ -1,7 +1,6 @@
 package br.com.zup.edu.grpc.http.client.bcb.dto.response
 
-import br.com.zup.edu.grpc.dominio.modelo.Titular
-import br.com.zup.edu.grpc.endpoint.consultar.dto.response.TitularResponseDto
+import br.com.zup.edu.grpc.endpoint.consultar.unica.dto.response.TitularResponseDto
 
 data class OwnerResponse(
     val type: String,

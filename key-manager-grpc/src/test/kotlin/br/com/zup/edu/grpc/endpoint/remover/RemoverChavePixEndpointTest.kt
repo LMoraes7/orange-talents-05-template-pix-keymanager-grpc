@@ -119,8 +119,9 @@ internal class RemoverChavePixEndpointTest(
         }
     }
 
-    @Test
-    internal fun `deve dar erro quando o bacen retornar forbidden(422)`() {
+    //Consertar esse teste depois
+    @Test                                             //Ignorar semnântica de retorno
+    internal fun `deve dar erro quando o bacen retornar forbidden(403)`() {
         Mockito.`when`(this.itauClient.buscarCliente(this.chavePix.clienteId))
             .thenReturn(HttpResponse.ok())
 
