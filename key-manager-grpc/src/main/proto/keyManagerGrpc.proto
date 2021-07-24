@@ -7,44 +7,97 @@ option objc_class_prefix = "HLW";
 
 package br.com.zup.edu;
 
-service ChavePixUnicaConsultarService {
-  rpc consultarUnica (ChavePixUnicaConsultarRequest) returns (ChavePixUnicaConsultarResponse) {}
+service CadastrarChavePixService {
+  rpc cadastrar (NovaChavePixRequestGrpc) returns (NovaChavePixResponseGrpc) {}
 }
 
-service ChavePixTodasConsultarService {
-  rpc consultarTodas (ChavePixTodasConsultarRequest) returns (ChavePixTodasConsultarResponse) {}
+service RemoverChavePixService {
+  rpc remover (RemoverChavePixRequestGrpc) returns (RemoverChavePixResponseGrpc) {}
 }
 
-service ChavePixCadastrarService {
-  rpc cadastrar (ChavePixCadastrarRequest) returns (ChavePixCadastrarResponse) {}
+service ConsultarChavePixService {
+  rpc consultar (ConsultarChavePixRequestGrpc) returns (ConsultarChavePixResponseGrpc) {}
 }
 
-service ChavePixRemoverService {
-  rpc remover (ChavePixRemoverRequest) returns (ChavePixRemoverResponse) {}
+service ConsultarTodasChavePixService {
+  rpc consultar (ConsultarTodasChavePixRequestGrpc) returns (ConsultarTodasChavePixResponseGrpc) {}
 }
 
-//---------------------------------------------------------
-
-message ChavePixTodasConsultarRequest {
+message ConsultarTodasChavePixRequestGrpc {
   string clienteId = 1;
 }
 
-message ChavePixTodasConsultarResponse {
-  message ChavePix {
+message ConsultarTodasChavePixResponseGrpc {
+  message DetalhesChavePix {
     string pixId = 1;
-    string tipoChave = 2;
-    string chave = 3;
-    string tipoConta = 4;
-    string dataRegistro = 5;
+    string clienteId = 2;
+    string tipoChave = 3;
+    string chave = 4;
+    string tipoConta = 5;
+    string registradaEm = 6;
+  }
+  repeated DetalhesChavePix chavesPix = 1;
+}
+
+message ConsultarChavePixRequestGrpc {
+  message FiltroPoPixId {
+    string clienteId = 1;
+    string pixId = 2;
   }
 
-  string clienteId = 1;
-  repeated ChavePix chaves = 2;
+  //oneof indica para o gRPC que apenas um dos campos deve ser preenchido
+  oneof filtro {
+    FiltroPoPixId pixId = 1;
+    string chave = 2;
+  }
 }
 
-//---------------------------------------------------------
+message ConsultarChavePixResponseGrpc {
+  string pixId = 1;
+  string clienteId = 2;
+  string tipoChave = 3;
+  string chave = 4;
 
-enum TipoChave {
+  message Titular {
+    string nome = 1;
+    string cpf = 2;
+  }
+
+  Titular titular = 5;
+
+  message Conta {
+    string instituicao = 1;
+    string agencia = 2;
+    string numero = 3;
+    string tipoConta = 4;
+  }
+
+  Conta conta = 6;
+  string registradaEm = 7;
+}
+
+message RemoverChavePixRequestGrpc {
+  string pixId = 1;
+  string clienteId = 2;
+}
+
+message RemoverChavePixResponseGrpc {
+  bool removida = 1;
+}
+
+message NovaChavePixRequestGrpc {
+  string clienteId = 1;
+  TipoChaveGrpc tipoChave = 2;
+  optional string chave = 3;
+  TipoContaGrpc tipoConta = 4;
+}
+
+message NovaChavePixResponseGrpc {
+  string clienteId = 1;
+  string pixIdInterno = 2;
+}
+
+enum TipoChaveGrpc {
   CHAVE_DESCONHECIDA = 0;
   CPF = 1;
   CNPJ = 2;
@@ -53,72 +106,8 @@ enum TipoChave {
   ALEATORIA = 5;
 }
 
-enum TipoConta {
+enum TipoContaGrpc{
   CONTA_DESCONHECIDA = 0;
   CONTA_CORRENTE = 1;
   CONTA_POUPANCA = 2;
 }
-
-//---------------------------------------------------------
-
-message FiltroPoPixId {
-  string clienteId = 1;
-  string pixId = 2;
-}
-
-message ChavePixUnicaConsultarRequest{
-  oneof filtro {
-    FiltroPoPixId pixId = 1;
-    string chave = 2;
-  }
-}
-
-//---------------------------------------------------------
-
-message Titular {
-  string nome = 1;
-  string cpf = 2;
-}
-
-message ContaAssociada {
-  string instituicao = 1;
-  string agencia = 2;
-  string numero = 3;
-  string tipoConta = 4;
-}
-
-message ChavePixUnicaConsultarResponse{
-  string pixId = 1;
-  string clienteId = 2;
-  string tipoChave = 3;
-  string chave = 4;
-  Titular titular = 5;
-  ContaAssociada contaAssociada = 6;
-  string dataRegistro = 7;
-}
-
-//---------------------------------------------------------
-
-message ChavePixCadastrarRequest {
-  string clienteId = 1;
-  TipoChave tipoChave = 2;
-  string chave = 3;
-  TipoConta tipoConta = 4;
-}
-
-message ChavePixCadastrarResponse {
-  string pixId = 1;
-}
-
-//---------------------------------------------------------
-
-message ChavePixRemoverRequest {
-  string clienteId = 1;
-  string pixIdInterno = 2;
-}
-
-message ChavePixRemoverResponse {
-  bool removida = 1;
-}
-
-//---------------------------------------------------------

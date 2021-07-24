@@ -1,80 +1,58 @@
 package br.com.zup.edu.grpc.service
 
-import br.com.zup.edu.grpc.dominio.exception.forbidden.ManipulacaoInvalidaDeChaveException
-import br.com.zup.edu.grpc.dominio.exception.notfound.ChavePixNaoEncontradaException
-import br.com.zup.edu.grpc.dominio.exception.notfound.ClienteNaoEncontradoException
+import br.com.zup.edu.grpc.dominio.exception.ChavePixInexistenteException
+import br.com.zup.edu.grpc.dominio.exception.ExclusaoDeChavePixInvalidaException
 import br.com.zup.edu.grpc.dominio.modelo.ChavePix
 import br.com.zup.edu.grpc.dominio.repository.ChavePixRepository
-import br.com.zup.edu.grpc.endpoint.consultar.util.VerificarSeClienteExisteNoSistemaItau
-import br.com.zup.edu.grpc.endpoint.remover.dto.ChavePixRemoverRequestDto
+import br.com.zup.edu.grpc.enpoint.remover.dto.RemoverChavePixRequestDto
 import br.com.zup.edu.grpc.http.client.bcb.BcbClient
-import br.com.zup.edu.grpc.http.client.itau.ItauClient
 import io.micronaut.http.HttpStatus
-import io.micronaut.http.client.exceptions.HttpClientResponseException
+import io.micronaut.validation.Validated
 import org.slf4j.LoggerFactory
 import javax.inject.Singleton
-import javax.transaction.Transactional
+import javax.validation.Valid
 
 @Singleton
+@Validated
 class RemoverChavePixService(
-    private val chavePixRepository: ChavePixRepository,
-    private val itauClient: ItauClient,
+    private val repository: ChavePixRepository,
     private val bcbClient: BcbClient,
 ) {
 
-    private val logger = LoggerFactory.getLogger(RemoverChavePixService::class.java)
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
-    @Transactional
-    fun remover(chaveDto: ChavePixRemoverRequestDto) {
+    fun remover(@Valid chaveRequest: RemoverChavePixRequestDto): Boolean {
+        this.logger.info("service -> efetuando busca da chave pix com o cliente no sistema interno")
 
-        this.logger.info("service -> efetuando busca do cliente no sistema itaú")
+        val chavePix =
+            this.verificarSeChavePixComOClienteEstaCadastradaNoSistema(chaveRequest)
 
-        VerificarSeClienteExisteNoSistemaItau.verifica(this.itauClient, chaveDto.clienteId!!)
+        this.removerChavePixDoSistemaDoBacen(chavePix)
 
-        this.logger.info("service -> efetuando busca da chave pix no sistema interno")
+        this.logger.info("service -> efetuando remoção da chave pix na base de dados")
 
-        this.removerChavePixNoSistemaInterno(chaveDto).run {
-            logger.info("service -> efetuando remoção da chave pix no sistema do bacen")
-            removerChavePixNoSistemaDoBacen(this)
+        this.repository.deleteById(chavePix.identificador!!)
+        return true
+    }
+
+    private fun removerChavePixDoSistemaDoBacen(chavePix: ChavePix) {
+        this.bcbClient.remover(chavePix.chave, chavePix.paraDeletePixKeyRequest())
+            .run {
+                if (!this.status.equals(HttpStatus.OK))
+                    throw ExclusaoDeChavePixInvalidaException("Exclusão de chave pix não foi permitida")
+            }
+    }
+
+    private fun verificarSeChavePixComOClienteEstaCadastradaNoSistema(chaveRequest: RemoverChavePixRequestDto) =
+        this.repository.consultarPeloIdInternoEPeloCliente(
+            chaveRequest.pixId!!,
+            chaveRequest.clienteId!!
+        ).run {
+            this.orElseThrow {
+                throw ChavePixInexistenteException(
+                    "Chave pix junto ao cliente informado não existe"
+                )
+            }
         }
 
-        this.logger.info("service -> retornando o fluxo da requisição para o endpoint")
-    }
-
-    private fun removerChavePixNoSistemaDoBacen(chavePixRemovida: ChavePix) {
-        this.bcbClient.remover(chavePixRemovida.chave, chavePixRemovida.paraDeletePixKeyRequest())
-            .run {
-                if (this.status == HttpStatus.FORBIDDEN)
-                    throw ManipulacaoInvalidaDeChaveException("O usuário não está autorizado a realizar a exclusão da chave pix")
-
-                if (this.status == HttpStatus.NOT_FOUND)
-                    throw ChavePixNaoEncontradaException("Chave PIX informada não existe no sistema do Bacen")
-            }
-    }
-
-    // Ao invés de buscar somente pelo pixIdInterno e depois fazer um 'if' para verificar se os
-    //  id's dos clientes são iguais, preferi buscar a ChavePix pelo pixIdInterno e pelo clienteId informados
-    //      fazendo um AND na consulta no BD
-    //
-    //Com isso deixaria de retornar um código 422 para o consumidor e retornaria um 404.
-    //  Mas vou deixar comentado o código com o retorno 422 abaixo como exemplo que eu iria usar
-    //
-    //Claro, no exemplo que eu apliquei a semântica de retorno poderia ficar um pouco confusa para o cliente,
-    //  mas acredito que em um sistema que possua interface gráfica,
-    //      um usuário não poderia e nem deveria 'ver' chaves pix que não lhe pertencem
-    //
-    private fun removerChavePixNoSistemaInterno(chaveDto: ChavePixRemoverRequestDto): ChavePix =
-        this.chavePixRepository.buscarChavePeloIdDoClienteEPeloIdInterno(chaveDto.clienteId!!, chaveDto.pixIdInterno!!)
-            //this.chavePixRepository.buscarPeloIdInterno(chaveDto.pixIdInterno!!)
-            .run {
-                this.ifPresentOrElse({
-                    //if(!chaveDto.clienteId.equals(it.clienteId))
-                    //throw ManipulacaoInvalidaDeChaveException("O usuário não está autorizado a realizar a exclusão da chave pix")
-                    logger.info("service -> efetuando remoção da chave pix na base de dados")
-                    chavePixRepository.deletarPeloIdInterno(chaveDto.pixIdInterno)
-                }, {
-                    throw ChavePixNaoEncontradaException("Chave PIX informada não existe no sistema")
-                })
-                this.get()
-            }
 }
