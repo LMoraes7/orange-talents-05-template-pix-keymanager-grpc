@@ -32,7 +32,7 @@ class ChavePix(
     val idInterno: String = UUID.randomUUID().toString()
     //------------------------------------
 
-    @Column(nullable = false, columnDefinition = "DATETIME")
+    @Column(nullable = false)//, columnDefinition = "DATETIME")
     val registradaEm: LocalDateTime = LocalDateTime.now()
 
     override fun equals(other: Any?): Boolean {

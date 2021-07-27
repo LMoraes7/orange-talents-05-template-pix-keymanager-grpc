@@ -4,20 +4,19 @@ micronaut:
 
 datasources:
   default:
-    url: jdbc:${DB_SERVER:mysql}://${DB_HOST:localhost}:${DB_PORT:3306}/${DATABASE_DB:pix}?createDatabaseIfNotExist=true&serverTimezone=UTC
-    driverClassName: com.mysql.cj.jdbc.Driver
-    username: ${DB_USER:root}
+    url: ${DB_URI:`jdbc:postgresql://localhost:5432/postgres?createDatabaseIfNotExist=true&serverTimezone=UTC`}
+    username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:root}
-    schema-generate: CREATE_DROP
-    dialect: MYSQL
+    schema-generate: CREATE
+    dialect: ${DB_DIALECT:POSTGRES}
 
 jpa:
   default:
     properties:
-      hibernate.hbm2ddl.auto: create-drop
-      hibernate.show_sql: false
-      hibernate.format_sql: false
+      hibernate.hbm2ddl.auto: create
+      hibernate.show_sql: true
+      hibernate.format_sql: true
 
-itau.client.url: http://${ITAU_HOST:localhost}:9091
+itau.client.url: ${ITAU_URL:`http://localhost:9091`}
 
-bcb.client.url: http://${BCB_HOST:localhost}:8082
+bcb.client.url: ${BCB_URL:`http://localhost:8082`}

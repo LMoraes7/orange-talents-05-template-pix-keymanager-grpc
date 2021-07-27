@@ -85,7 +85,10 @@ class CadastrarChavePixService(
         return with(response) {
             when (this.status) {
                 HttpStatus.OK -> this.body()!!
-                HttpStatus.NOT_FOUND -> throw ContaInexistenteException("Dados do cliente não existem no sistema Itaú")
+                HttpStatus.NOT_FOUND -> {
+                    println(this.status)
+                    throw ContaInexistenteException("Dados do cliente não existem no sistema Itaú")
+                }
                 else -> throw ErroDesconhecidoException("${this.status} - Erro desconhecido durante a resposta do sistema Itaú")
             }
         }

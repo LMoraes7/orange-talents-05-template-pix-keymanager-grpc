@@ -1,41 +1,44 @@
 version: '3'
 networks:
-  grpc-pix-network:
+  pix-network:
     driver: bridge
 services:
+  postgres:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    networks:
+      - pix-network
+    environment:
+      POSTGRES_PASSWORD: root
   bcb:
     image: "public.ecr.aws/d8b2x5c9/orange-stack-sat-bcb-pix"
     ports:
       - 8082:8082
     networks:
-      - grpc-pix-network
+      - pix-network
     depends_on:
-      - mysql
-  erp-itau:
+      - postgres
+  itau:
     image: "public.ecr.aws/d8b2x5c9/orange-stack-sat-itau-erp"
     ports:
       - 9091:9091
     networks:
-      - grpc-pix-network
+      - pix-network
     depends_on:
       - bcb
-  mysql:
-    image: mysql:latest
-    ports:
-      - 3306:3306
-    networks:
-      - grpc-pix-network
-    environment:
-      MYSQL_ROOT_PASSWORD: root
   grpc-pix:
     image: grpc-pix:latest
     ports:
       - 50051:50051
-    environment:
-      DB_HOST: mysql
-      ITAU_HOST: erp-itau
-      BCB_HOST: bcb
     networks:
-      - grpc-pix-network
+      - pix-network
+    environment:
+      DB_URI: jdbc:postgresql://postgres:5432/postgres?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USER: postgres
+      DB_PASSWORD: root
+      DB_DIALECT: POSTGRES
+      ITAU_URL: http://itau:9091
+      BCB_URL: http://bcb:8082
     depends_on:
-      - erp-itau
+      - itau
