@@ -15,7 +15,6 @@ phases:
     commands:
       - echo connecting ecr
       - docker login -u AWS -p $(aws ecr-public get-login-password --region us-east-1) $URL_REPO
-      # aqui você poderá colocar os comandos para o build de seu projeto, exemplo:
       - sh gradlew build
       - echo exporting kubeconfig
       - export KUBECONFIG=$HOME/.kube/config
@@ -34,7 +33,6 @@ phases:
       - docker push $URL_REPO/$DEPLOYMENT_NAME:$IMAGE_TAG
       - echo Push completed on `date`
       - echo deploying to cluster...
-      # aqui um exemplo de implementação utilizando helm, caso utilize manifestos, lembre-se do kubectl apply -f <ARQUIVO>.yaml
       - helm version --short
       - helm lint pipeline/helm/$DEPLOYMENT_NAME --values pipeline/helm/$DEPLOYMENT_NAME/values.yaml
       - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn $ARN_ROLE

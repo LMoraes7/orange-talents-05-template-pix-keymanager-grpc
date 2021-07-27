@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: pix-grpc-configmap
+  name: key-manager-grpc-configmap
 data:
   DB_URI: "{{ .Values.application.DB_URI }}"
   DB_USER: "{{ .Values.application.DB_USER }}"

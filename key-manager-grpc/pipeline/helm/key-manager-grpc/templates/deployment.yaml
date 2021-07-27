@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "pix-keymanager-grpc.fullname" . }}
+  name: {{ include "key-manager-grpc.fullname" . }}
   labels:
-    {{- include "pix-keymanager-grpc.labels" . | nindent 4 }}
+    {{- include "key-manager-grpc.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "pix-keymanager-grpc.selectorLabels" . | nindent 6 }}
+      {{- include "key-manager-grpc.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,13 +18,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "pix-keymanager-grpc.selectorLabels" . | nindent 8 }}
+        {{- include "key-manager-grpc.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "pix-keymanager-grpc.serviceAccountName" . }}
+      serviceAccountName: {{ include "key-manager-grpc.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -47,9 +47,9 @@ spec:
               port: http
           envFrom:
             - configMapRef:
-                name: pix-grpc-configmap
+                name: key-manager-grpc-configmap
             - secretRef:
-                name: pix-grpc-secrets
+                name: key-manager-grpc-secret
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
