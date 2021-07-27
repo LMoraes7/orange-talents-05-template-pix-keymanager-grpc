@@ -9,7 +9,7 @@ import br.com.zup.edu.grpc.dominio.modelo.Conta
 import br.com.zup.edu.grpc.dominio.modelo.Instituicao
 import br.com.zup.edu.grpc.dominio.modelo.Titular
 import br.com.zup.edu.grpc.dominio.repository.ChavePixRepository
-import br.com.zup.edu.grpc.http.client.ItauClient
+import br.com.zup.edu.grpc.http.client.itau.ItauClient
 import io.grpc.ManagedChannel
 import io.grpc.Status
 import io.grpc.StatusRuntimeException

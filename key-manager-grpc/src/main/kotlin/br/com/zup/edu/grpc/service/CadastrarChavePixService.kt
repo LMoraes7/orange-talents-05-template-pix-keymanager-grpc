@@ -6,10 +6,10 @@ import br.com.zup.edu.grpc.dominio.exception.ErroDesconhecidoException
 import br.com.zup.edu.grpc.dominio.modelo.ChavePix
 import br.com.zup.edu.grpc.dominio.repository.ChavePixRepository
 import br.com.zup.edu.grpc.enpoint.cadastrar.dto.NovaChavePixRequestDto
-import br.com.zup.edu.grpc.http.client.ItauClient
 import br.com.zup.edu.grpc.http.client.bcb.BcbClient
 import br.com.zup.edu.grpc.http.client.bcb.request.KeyType
 import br.com.zup.edu.grpc.http.client.bcb.response.CreatePixKeyResponse
+import br.com.zup.edu.grpc.http.client.itau.ItauClient
 import br.com.zup.edu.grpc.http.client.itau.response.DadosDaContaResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.validation.Validated

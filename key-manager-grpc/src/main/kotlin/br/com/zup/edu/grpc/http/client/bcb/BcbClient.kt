@@ -1,6 +1,5 @@
 package br.com.zup.edu.grpc.http.client.bcb
 
-
 import br.com.zup.edu.grpc.http.client.bcb.request.CreatePixKeyRequest
 import br.com.zup.edu.grpc.http.client.bcb.request.DeletePixKeyRequest
 import br.com.zup.edu.grpc.http.client.bcb.response.CreatePixKeyResponse
@@ -12,7 +11,7 @@ import io.micronaut.http.client.annotation.Client
 import javax.inject.Singleton
 
 @Singleton
-@Client("http://localhost:8082")
+@Client("\${bcb.client.url}")
 interface BcbClient {
 
     @Post("/api/v1/pix/keys")

@@ -4,7 +4,7 @@ import br.com.zup.edu.grpc.dominio.exception.ClienteInexistenteException
 import br.com.zup.edu.grpc.dominio.modelo.ChavePix
 import br.com.zup.edu.grpc.dominio.repository.ChavePixRepository
 import br.com.zup.edu.grpc.enpoint.consultar.todas.request.ConsultarTodasChavePixRequestDto
-import br.com.zup.edu.grpc.http.client.ItauClient
+import br.com.zup.edu.grpc.http.client.itau.ItauClient
 import io.micronaut.http.HttpStatus
 import io.micronaut.validation.Validated
 import javax.inject.Singleton

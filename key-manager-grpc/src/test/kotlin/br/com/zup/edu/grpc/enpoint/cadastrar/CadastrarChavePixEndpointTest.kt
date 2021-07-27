@@ -8,9 +8,9 @@ import br.com.zup.edu.grpc.dominio.enums.TipoChaveModel
 import br.com.zup.edu.grpc.dominio.enums.TipoContaModel
 import br.com.zup.edu.grpc.dominio.modelo.ChavePix
 import br.com.zup.edu.grpc.dominio.repository.ChavePixRepository
-import br.com.zup.edu.grpc.http.client.ItauClient
 import br.com.zup.edu.grpc.http.client.bcb.BcbClient
 import br.com.zup.edu.grpc.http.client.bcb.response.CreatePixKeyResponse
+import br.com.zup.edu.grpc.http.client.itau.ItauClient
 import br.com.zup.edu.grpc.http.client.itau.response.DadosDaContaResponse
 import br.com.zup.edu.grpc.http.client.itau.response.InstituicaoResponse
 import br.com.zup.edu.grpc.http.client.itau.response.TitularResponse

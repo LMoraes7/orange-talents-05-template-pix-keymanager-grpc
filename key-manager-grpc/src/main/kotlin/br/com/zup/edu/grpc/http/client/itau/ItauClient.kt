@@ -1,8 +1,5 @@
-package br.com.zup.edu.grpc.http.client
+package br.com.zup.edu.grpc.http.client.itau
 
-import br.com.zup.edu.grpc.dominio.modelo.Conta
-import br.com.zup.edu.grpc.dominio.modelo.Instituicao
-import br.com.zup.edu.grpc.dominio.modelo.Titular
 import br.com.zup.edu.grpc.http.client.itau.response.DadosDaContaResponse
 import br.com.zup.edu.grpc.http.client.itau.response.DadosDoClienteResponse
 import io.micronaut.http.HttpResponse
@@ -13,7 +10,7 @@ import io.micronaut.http.client.annotation.Client
 import javax.inject.Singleton
 
 @Singleton
-@Client("http://localhost:9091")
+@Client("\${itau.client.url}")
 interface ItauClient {
 
     @Get("/api/v1/clientes/{clienteId}")
