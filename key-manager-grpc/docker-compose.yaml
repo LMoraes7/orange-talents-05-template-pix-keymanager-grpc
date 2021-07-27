@@ -1,0 +1,41 @@
+version: '3'
+networks:
+  grpc-pix-network:
+    driver: bridge
+services:
+  bcb:
+    image: "public.ecr.aws/d8b2x5c9/orange-stack-sat-bcb-pix"
+    ports:
+      - 8082:8082
+    networks:
+      - grpc-pix-network
+    depends_on:
+      - mysql
+  erp-itau:
+    image: "public.ecr.aws/d8b2x5c9/orange-stack-sat-itau-erp"
+    ports:
+      - 9091:9091
+    networks:
+      - grpc-pix-network
+    depends_on:
+      - bcb
+  mysql:
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    networks:
+      - grpc-pix-network
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+  grpc-pix:
+    image: grpc-pix:latest
+    ports:
+      - 50051:50051
+    environment:
+      DB_HOST: mysql
+      ITAU_HOST: erp-itau
+      BCB_HOST: bcb
+    networks:
+      - grpc-pix-network
+    depends_on:
+      - erp-itau

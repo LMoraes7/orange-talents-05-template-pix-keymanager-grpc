@@ -18,6 +18,6 @@ jpa:
       hibernate.show_sql: false
       hibernate.format_sql: false
 
-itau.client.url: ${ITAU_URL:`http://localhost:9091`}
+itau.client.url: http://${ITAU_HOST:localhost}:9091
 
-bcb.client.url: ${BCB_URL:`http://localhost:8082`}
+bcb.client.url: http://${BCB_HOST:localhost}:8082
